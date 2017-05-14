@@ -5,10 +5,10 @@ defmodule Msgpax.UnpackError do
 
   @type t :: %__MODULE__{
     reason: {:excess_bytes, binary} |
-            {:bad_format, integer} |
+            {:invalid_format, integer} |
             :incomplete |
             {:not_supported_ext, integer} |
-            {:ext_unpack_failure, module, map},
+            {:ext_unpack_failure, module, Msgpax.Ext.t},
   }
 
   defexception [:reason]
@@ -134,11 +134,11 @@ defmodule Msgpax.Unpacker do
   end
 
   defp unpack(<<byte, _::bits>>, _result, _options, _outer, _index, _count) do
-    throw(%UnpackError{reason: {:invalid_format, byte}})
+    throw({:invalid_format, byte})
   end
 
   defp unpack(<<_::bits>>, _result, _options, _outer,  _index, _count) do
-    throw(%UnpackError{reason: :incomplete})
+    throw(:incomplete)
   end
 
   @compile {:inline, [unpack_continue: 6]}
@@ -186,7 +186,7 @@ defmodule Msgpax.Unpacker do
         |> Msgpax.Ext.new(content)
         |> unpack_ext(%{ext: Msgpax.Ext.RsvdUnpacker})
       true ->
-        throw(%UnpackError{reason: {:not_supported_ext, type}})
+        throw({:not_supported_ext, type})
     end
   end
 
@@ -197,7 +197,7 @@ defmodule Msgpax.Unpacker do
       {:ok, result} ->
         result
       :error ->
-        throw(%UnpackError{reason: {:ext_unpack_failure, module, struct}})
+        throw({:ext_unpack_failure, module, struct})
     end
   end
 

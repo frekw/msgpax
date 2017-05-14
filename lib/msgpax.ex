@@ -39,9 +39,9 @@ defmodule Msgpax do
 
   This function returns `{:ok, iodata}` if the serialization is successful,
   `{:error, exception}` otherwise, where `exception` is a `Msgpax.PackError`
-  struct. Since `exception` is a valid exception, it can be raised and converted
-  to a more human-friendly error message with `Exception.message/1.` See
-  `Msgpax.PackError` for all the possible reasons for a packing error.
+  struct which can be raised or converted to a more human-friendly error
+  message with `Exception.message/1`. See `Msgpax.PackError` for all the
+  possible reasons for a packing error.
 
   ## Options
 
@@ -68,8 +68,8 @@ defmodule Msgpax do
     try do
       Packer.pack(term)
     catch
-      :throw, error ->
-        {:error, error}
+      :throw, reason ->
+        {:error, %Msgpax.PackError{reason: reason}}
     else
       iodata when iodata? ->
         {:ok, iodata}
@@ -106,8 +106,8 @@ defmodule Msgpax do
     case pack(term, options) do
       {:ok, result} ->
         result
-      {:error, error} ->
-        raise error
+      {:error, exception} ->
+        raise exception
     end
   end
 
@@ -118,7 +118,7 @@ defmodule Msgpax do
   a MessagePack-serialized term with nothing after that, it accepts leftover
   bytes at the end of `iodata` and only de-serializes the part of the input that
   makes sense. It returns `{:ok, term, rest}` if de-serialization is successful,
-  `{:error, exception}` otherwise (where `exception` is a `Msgpax.Unpacker`
+  `{:error, exception}` otherwise (where `exception` is a `Msgpax.UnpackError`
   struct).
 
   See `unpack/2` for more information on the supported options.
@@ -141,8 +141,8 @@ defmodule Msgpax do
       |> IO.iodata_to_binary()
       |> Unpacker.unpack(opts)
     catch
-      :throw, error ->
-        {:error, error}
+      :throw, reason ->
+        {:error, %Msgpax.UnpackError{reason: reason}}
     else
       {value, rest} ->
         {:ok, value, rest}
@@ -170,16 +170,20 @@ defmodule Msgpax do
     case unpack_slice(iodata, opts) do
       {:ok, value, rest} ->
         {value, rest}
-      {:error, error} ->
-        raise error
+      {:error, exception} ->
+        raise exception
     end
   end
 
   @doc """
   De-serializes the given `iodata`.
 
-   It returns
-  `{:ok, term}` if de-serialization is successful, `{:error, reason}` otherwise.
+  This function de-serializes the given `iodata` into an Elixir term. It returns
+  `{:ok, term}` if the de-serialization is successful, `{:error, exception}`
+  otherwise, where `exception` is a `Msgpax.UnpackError` struct which can be
+  raised or converted to a more human-friendly error message with
+  `Exception.message/1`. See `Msgpax.UnpackError` for all the possible reasons
+  for an unpacking error.
 
   This function de-serializes the given `iodata` into an Elixir term. It returns
   `{:ok, term}` if the de-serialization is successful, `{:error, exception}`
@@ -246,8 +250,8 @@ defmodule Msgpax do
     case unpack(iodata, opts) do
       {:ok, value} ->
         value
-      {:error, error} ->
-        raise error
+      {:error, exception} ->
+        raise exception
     end
   end
 end
