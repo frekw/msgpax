@@ -32,8 +32,6 @@ end
 defmodule Msgpax.Unpacker do
   @moduledoc false
 
-  alias Msgpax.UnpackError
-
   def unpack(<<buffer::bits>>, options) do
     unpack(buffer, [], options, [], 0, 1)
   end
