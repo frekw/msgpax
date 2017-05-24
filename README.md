@@ -1,4 +1,5 @@
 # Msgpax
+
 [![Build Status](https://travis-ci.org/lexmag/msgpax.svg)](https://travis-ci.org/lexmag/msgpax)
 [![Hex Version](https://img.shields.io/hexpm/v/msgpax.svg)](https://hex.pm/packages/msgpax)
 
@@ -22,15 +23,15 @@ Add `:msgpax` as a dependency in your `mix.exs` file:
 
 ```elixir
 def deps do
-  [{:msgpax, "~> 1.0"}]
+  [{:msgpax, "~> 2.0"}]
 end
 ```
 
-After you are done, run `mix deps.get` in your shell to fetch the dependencies.
+Then, run `mix deps.get` in your shell to fetch the new dependency.
 
 ## License
 
-This software is licensed under [the ISC license](LICENSE).
+Msgpax is released under [the ISC license](LICENSE).
 
 
 [docs]: http://hexdocs.pm/msgpax

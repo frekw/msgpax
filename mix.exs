@@ -1,12 +1,12 @@
 defmodule Msgpax.Mixfile do
   use Mix.Project
 
-  @version "1.1.0"
+  @version "2.0.0"
 
   def project do
     [app: :msgpax,
      version: @version,
-     elixir: "~> 1.0",
+     elixir: "~> 1.4",
      consolidate_protocols: Mix.env != :test,
      description: description(),
      deps: deps(),
@@ -21,7 +21,7 @@ defmodule Msgpax.Mixfile do
 
   defp description() do
     "This library provides an API for serializing" <>
-    " and de-serializing Elixir terms using the MessagePack format"
+    " and de-serializing Elixir terms using the MessagePack format."
   end
 
   defp package() do
@@ -31,7 +31,7 @@ defmodule Msgpax.Mixfile do
   end
 
   defp deps() do
-    [{:ex_doc, "~> 0.12", only: :docs},
+    [{:ex_doc, "~> 0.14", only: :dev, runtime: false},
      {:plug, "~> 1.0", optional: true}]
   end
 end
